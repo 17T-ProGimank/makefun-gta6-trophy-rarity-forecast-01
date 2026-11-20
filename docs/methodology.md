@@ -46,10 +46,12 @@ release)`:
    quantiles come from bisecting the mixture's CDF. So the lower
    quantiles sit near the post-refresh level and the upper ones near the
    current level.
-3. **Fallbacks.** Two points make a line through them with a wide
-   spread; a trophy whose rate is missing everywhere falls back to the
-   mixture centred on its last non-null rate. Rates are clamped to
-   0.01–99.99 before the logit, as the scorer does.
+3. **Fallbacks.** Two points make a line through them, with the spread
+   halved like the trend branches (the 0.75 logit allowance for the
+   line's own error goes through the same spread rule); a trophy whose
+   rate is missing everywhere falls back to the mixture centred on its
+   last non-null rate. Rates are clamped to 0.01–99.99 before the logit,
+   as the scorer does.
 
 Everything is deterministic: fixed float arithmetic, no randomness,
 cases read in name order.

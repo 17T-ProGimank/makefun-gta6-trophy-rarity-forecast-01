@@ -279,14 +279,18 @@ def forecast_trophy(idx, epochs, t_last, x_target, horizon_days, levels):
             s = spread_of(pred_var)
             return [round4(inv_logit(mu + z * s)) for z in zs]
 
-    # Two points make a line through them, with a wide spread.
+    # Two points make a line through them. A line through two points has
+    # no residual to measure, so its own error is allowed 0.75 logit — the
+    # same kind of variance term the trend branches pass to spread_of, and
+    # like them it is halved there (the measured halved spread, see
+    # docs/methodology.md), instead of the unhalved spread used before.
     all_pts = points(float("inf"))
     if len(all_pts) == 2:
         (x1, y1), (x2, y2) = all_pts
         if x2 != x1:
             b = (y2 - y1) / (x2 - x1)
             mu = y1 + b * (x_target - x1)
-            s = min(SPREAD_MAX, max(SPREAD_MIN, math.sqrt(rw * rw + 0.75 ** 2)))
+            s = spread_of(0.75 ** 2)
             return [round4(inv_logit(mu + z * s)) for z in zs]
 
     # No trend to fit (a single frozen page): expect a refresh.
